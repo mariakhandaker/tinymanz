@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/mariakhandaker/tinymanz/issues"
   },
-  "homepage": "https://github.com/mariakhandaker/tinymanz#readme"
+  "homepage": "https://github.com/mariakhandaker/tinymanz#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
