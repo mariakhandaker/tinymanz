@@ -31,8 +31,17 @@ const users = {
   }
 }
 //generate shortURL
-const generateRandomString = () => {
+function generateRandomString() {
   return Math.random().toString(36).substring(3, 9);
+};
+
+function doesUserExist(email) {
+  for (let user in users) {
+    if (user[email] === email) {
+      return user;
+    }
+  }
+  return false;  
 };
 
 //GET routes
@@ -111,14 +120,20 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
   const userID = generateRandomString();
-  users[userID] = {
-    id: userID,
-    email: req.body.email,
-    password: req.body.password,  
-  };
+  const email = req.body.email;
+  const password = req.body.password;
   
-  res.cookie("user_id", userID);
-  res.redirect("/urls");
+  if (!email || !password || doesUserExist() === true) {
+    res.send(400);
+  } else {
+    users[userID] = {
+      id: userID,
+      email: email,
+      password: password,  
+    };
+    res.cookie("user_id", userID);
+    res.redirect("/urls");
+  }
 });
 
 app.listen(PORT, () => {
