@@ -37,7 +37,7 @@ function generateRandomString() {
 
 function doesUserExist(email) {
   for (let user in users) {
-    if (user.email === email) {
+    if (user["email"] === email) {
       return user;
     }
   }
@@ -106,6 +106,13 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  let templateVars = {
+    user: req.cookies["user_id"], 
+    urls: urlDatabase,
+  }
+  res.render("urls_login", templateVars); 
+})
 //POST routes
 //generate short URL and store it in databse
 app.post("/urls", (req, res) => {
@@ -129,17 +136,21 @@ app.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
   let user = doesUserExist(email);
+  
   if (password === '' || email === '') {
     res.status("400").send("Please don't leave any fields blank!");
   }
-  if (!user) {
+  
+  if (user) {
+    if (letUserLogin(email, password) === true) {
+      res.cookie("user_id", user.id)
+      res.redirect("/urls");
+    } else { 
+      res.status("403").send("Sorry, it looks like you've entered something incorrectly. Please try again!");
+    }
+  } else {
     res.status("403").send("Sorry, it doesn't look like we have an account associated with that email.");
   }
-  if (letUserLogin(email, password) === false) {
-    res.status("403").send("Sorry, it looks like you've entered something incorrectly. Please try again!");
-  }
-  res.cookie("user_id", user.id)
-  res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
@@ -152,8 +163,10 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   
-  if (!email || !password || doesUserExist() !== false) {
-    res.send(400);
+  if (email === '' || password === '') {
+    res.status("400").send("Please do not leave fields blank.");
+  } else if (doesUserExist(email)) {
+    res.status("400").send("It appears we already have a user registered with this email."); 
   } else {
     users[userID] = {
       id: userID,

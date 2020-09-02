@@ -14,15 +14,9 @@
     
     <div> 
       <% if (!user) { %>
-        <form method="POST" action="/login">
-          <label for="email">Email</label>
-            <input type="email" name="email">
-          <label for="password">Password</label>
-            <input type="password" name="password"> 
-          <button type="submit">Sign in!</button>
-        </form> 
+        <a href="/login">Log In</a> | <a href="/register">Register</a>
       <% } else { %>
-       <p>Logged in as <%= user.email %></p>
+       <p>Logged in as <%= user["email"] %></p>
         <form method="POST" action="/logout">
           <button type="submit">Logout</button>
         </form>   
