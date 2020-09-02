@@ -116,9 +116,14 @@ app.get("/login", (req, res) => {
 //POST routes
 //generate short URL and store it in databse
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect("/urls/" + shortURL);
+  if (req.cookies["user_id"]) {
+    const shortURL = generateRandomString();
+    urlDatabase[shortURL] = req.body.longURL;
+    res.redirect("/urls/" + shortURL); 
+  } else {
+    res.redirect("/login");
+  }
+  
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
