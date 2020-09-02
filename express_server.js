@@ -30,7 +30,7 @@ const users = {
     password: "dishwasher-funk"
   }
 }
-//generate shortURL
+//function declarations
 function generateRandomString() {
   return Math.random().toString(36).substring(3, 9);
 };
@@ -128,14 +128,17 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
-  let userID = users[req.cookies["user_id"]];
+  let user = doesUserExist(email);
   if (password === '' || email === '') {
-    res.status("400").send("Please do not leave any fields blank!");
+    res.status("400").send("Please don't leave any fields blank!");
   }
-  if (doesUserExist(email)) {
-    res.status("400").send("It appears a user with this email already exists! Please try again.");
+  if (!user) {
+    res.status("403").send("Sorry, it doesn't look like we have an account associated with that email.");
   }
-  res.cookie("user_id", userID);
+  if (letUserLogin(email, password) === false) {
+    res.status("403").send("Sorry, it looks like you've entered something incorrectly. Please try again!");
+  }
+  res.cookie("user_id", user.id)
   res.redirect("/urls");
 });
 
