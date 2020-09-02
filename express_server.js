@@ -37,15 +37,33 @@ function generateRandomString() {
 
 function doesUserExist(email) {
   for (let user in users) {
-    if (user[email] === email) {
+    if (user.email === email) {
       return user;
     }
   }
-  return false;  
+  return false;
 };
 
+function letUserLogin(email, password) {
+  for (let user in users) {
+    if (user.email === email && user.password === password) {
+      return true;
+    }
+  }
+  return false;
+};
+
+function urlsForUser(id) {
+  const userURLs = {};
+  for (let url in urlDatabase) {
+    if (url.userID === id) {
+      userURLs[url] = urlDatabase[url];
+    }
+  }
+  return userURLs;
+}
 //GET routes
-//homepage when logged in
+//homepage when logged in, shows url index
 app.get("/urls", (req, res) => {
   let templateVars = {
     user: req.cookies["user_id"],
@@ -108,8 +126,16 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  // res.cookie('email', req.body.email);
-  // res.cookie('password', req.body.password);
+  let email = req.body.email;
+  let password = req.body.password;
+  let userID = users[req.cookies["user_id"]];
+  if (password === '' || email === '') {
+    res.status("400").send("Please do not leave any fields blank!");
+  }
+  if (doesUserExist(email)) {
+    res.status("400").send("It appears a user with this email already exists! Please try again.");
+  }
+  res.cookie("user_id", userID);
   res.redirect("/urls");
 });
 
@@ -123,7 +149,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   
-  if (!email || !password || doesUserExist() === true) {
+  if (!email || !password || doesUserExist() !== false) {
     res.send(400);
   } else {
     users[userID] = {
