@@ -25,10 +25,12 @@
         </tr>
       </thead>
       <tbody>
-        <% for(let url in urls) { %>
+      <%= database[shortURL] %>
+        <% for(let url in database) { %>
           <tr>
             <td><a href="/u/<%= url %>"><%= url %></a></td>
-            <td><%= urls[url] %></td>
+            
+            <td><%= database[url].longURL %></td>
             <td><a href="/urls/<%= url %>/">Edit</a>    
             </td>
             <td>

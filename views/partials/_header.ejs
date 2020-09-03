@@ -11,17 +11,15 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    
-    <div> 
-      <% if (!user) { %>
-        <a href="/login">Log In</a> | <a href="/register">Register</a>
-      <% } else { %>
-       <p>Logged in as <%= user["email"] %></p>
-        <form method="POST" action="/logout">
-          <button type="submit">Logout</button>
-        </form>   
-      <% } %>
-      </div>
-      
+    <% if (user) { %>
+      <p>Logged in as <%= users[user].email %></p>
+      <form method="POST" action="/logout">
+        <button type="submit">Logout</button>
+      </form>    
+    <% } else { %>
+      <div> 
+         <a href="/login">Log In</a> | <a href="/register">Register</a> 
+       </div>
+    <% } %>
   </nav>
 </header>
