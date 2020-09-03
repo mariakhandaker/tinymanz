@@ -43,11 +43,12 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  if (!req.session.user_id) {
+  const user = req.session.user_id;
+  if (!user) {
     res.redirect("/login");
-  } 
+  }
   let templateVars = {
-    user: req.session.user_id,
+    user,
     urls: urlsForUser(user),
   };
   res.render("urls_new", templateVars);
@@ -115,7 +116,7 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/login", (req, res) => {
   const email = req.body.email;
   
-  if (doesUserExist(email, users) === false) {
+  if (getUserByEmail(email, users) === false) {
     res.status("403").send("Sorry, it doesn't look like we have an account associated with that email.");
   } 
   
