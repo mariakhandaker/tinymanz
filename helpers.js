@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const doesUserExist = (email, database) => {
+const getUserByEmail = (email, database) => {
   for (let user in database) {
     if (database[user].email === email) {;
       return database[user];
@@ -10,9 +10,9 @@ const doesUserExist = (email, database) => {
 }
 
 const letUserLogin = (email, password) => {
-  const user = doesUserExist(email, users);
+  const user = getUserByEmail(email, users);
   if (user) {
-    if (bcrypt.compareSync(password, user.password)) {
+    if (bcrypt.compareSync(password, user.hashedPassword)) {
       return user;
     }
   }
@@ -60,4 +60,4 @@ const urlsForUser = (id) => {
   return userURLs;
 };
 
-module.exports = { doesUserExist, letUserLogin, urlsForUser, users, urlDatabase };
+module.exports = { getUserByEmail, letUserLogin, urlsForUser, users, urlDatabase };
