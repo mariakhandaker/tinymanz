@@ -5,6 +5,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const bcrypt = require('bcrypt');
 const { doesUserExist, letUserLogin, urlsForUser } = require('./helpers');
 
 //setting middlewares for use
@@ -133,6 +134,8 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
+  let hashedPassword = bcrypt.hashSync(password, 10);
+  bcr
   let user = doesUserExist(email, users)
   console.log('testing user: ', user);
   
@@ -163,6 +166,8 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  
   if (email === '' || password === '') {
     res.status("400").send("Please do not leave fields blank.");
   } else if (doesUserExist(email)) {

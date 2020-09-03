@@ -1,22 +1,22 @@
+const bcrypt = require('bcrypt');
+
 const doesUserExist = (email, database) => {
   for (let user in database) {
-    if (database[user].email === email) {
-      // console.log(database[user].email);
-      // console.log(database[user]);
+    if (database[user].email === email) {;
       return database[user];
     }
   }
-  // return false;
+  return undefined;
 }
 
-const letUserLogin = (email, password, database) => {
-  
-  // for (let user in database) {
-  //   if (database[user].email === email && database[user].password === password) {
-  //     return true;
-  //   }
-  // }
-  // return false;
+const letUserLogin = (email, password) => {
+  const user = doesUserExist(email, users);
+  if (user) {
+    if (bcrypt.compareSync(password, user.password)) {
+      return user;
+    }
+  }
+  return false;
 };
 
 // const letUserLogin = (email, password) => {
@@ -53,11 +53,11 @@ const users = {
 const urlsForUser = (id) => {
   const userURLs = {};
   for (let url in urlDatabase) {
-    if (url.userID === id) {
-      userURLs[url] = { longURL: urlDatabase[url].longURL };
+    if (urlDatabase[url].userID === id) {
+      userURLs[url] = urlDatabase[url];
     }
   }
   return userURLs;
 };
 
-module.exports = { doesUserExist, letUserLogin, urlsForUser };
+module.exports = { doesUserExist, letUserLogin, urlsForUser, users, urlDatabase };
