@@ -5,6 +5,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const { doesUserExist, letUserLogin, urlsForUser } = require('./helpers');
 
 //setting middlewares for use
 app.use(bodyParser.urlencoded({extended: true}));
@@ -17,7 +18,6 @@ const urlDatabase = {
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
-//user Database for storing info (rough setup)
 const users = { 
   "userRandomID": {
     id: "userRandomID", 
@@ -35,33 +35,6 @@ function generateRandomString() {
   return Math.random().toString(36).substring(3, 9);
 };
 
-function doesUserExist(email) {
-  for (let user in users) {
-    if (user["email"] === email) {
-      return user;
-    }
-  }
-  return false;
-};
-
-function letUserLogin(email, password) {
-  for (let user in users) {
-    if (user.email === email && user.password === password) {
-      return true;
-    }
-  }
-  return false;
-};
-
-function urlsForUser(id) {
-  const userURLs = {};
-  for (let url in urlDatabase) {
-    if (url.userID === id) {
-      userURLs[url] = { longURL: urlDatabase[url].longURL };
-    }
-  }
-  return userURLs;
-}
 //GET routes
 //homepage when logged in, shows url index
 app.get("/urls", (req, res) => {
