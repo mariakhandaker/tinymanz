@@ -132,29 +132,25 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
-  let hashedPassword = bcrypt.hashSync(password, 10);
-  bcr
-  let user = doesUserExist(email, users)
-  console.log('testing user: ', user);
+  const email = req.body.email;
+  
+  if (doesUserExist(email, users) === false) {
+    res.status("403").send("Sorry, it doesn't look like we have an account associated with that email.");
+  } 
+  
+  const password = req.body.password;
   
   if (password === '' || email === '') {
     res.status("400").send("Please don't leave any fields blank!");
-  }
+  } 
   
-  console.log('email: ', email, 'password: ', password);
-  console.log(letUserLogin(email, password));
+  const user = letUserLogin(email, password);
+
   if (user) {
-    // if (letUserLogin(email, password)) {
-      if (true) {
-      res.cookie("user_id", user.id);
-      res.redirect("/urls");
-    } else {
-      res.status("403").send("Sorry, it looks like you've entered something incorrectly. Please try again!");
-    }
+    res.cookie("user_id", user.id);
+    res.redirect("/urls");
   } else {
-    res.status("403").send("Sorry, it doesn't look like we have an account associated with that email.");
+    res.status("403").send("Sorry, it looks like you've entered something incorrectly. Please try again!");
   }
 });
 
@@ -166,19 +162,19 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const hashedPassword = bcrypt.hashSync(password, 10);
   
   if (email === '' || password === '') {
-    res.status("400").send("Please do not leave fields blank.");
-  } else if (doesUserExist(email)) {
+    res.status("400").send("Please do not leave fields blank!");
+  } else if (doesUserExist(email, users)) {
     res.status("400").send("It appears we already have a user registered with this email.");
   } else {
     const userID = generateRandomString();
     users[userID] = {
       id: userID,
       email: email,
-      password: password,
+      password: bcrypt.hashSync(password, 10),
     };
+    
     res.cookie("user_id", userID);
     res.redirect("/urls");
   }
