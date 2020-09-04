@@ -167,6 +167,7 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
+//login if email + password work, otherwise redirect
 app.post("/login", (req, res) => {
   const email = req.body.email;
   
@@ -190,6 +191,7 @@ app.post("/login", (req, res) => {
   }
 });
 
+//create a new user with a unique ID
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -209,6 +211,7 @@ app.post("/register", (req, res) => {
   }
 });
 
+//logout, clear cookies
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/urls");
