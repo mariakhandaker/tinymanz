@@ -2,12 +2,12 @@ const bcrypt = require('bcrypt');
 
 const getUserByEmail = (email, database) => {
   for (let user in database) {
-    if (database[user].email === email) {;
+    if (database[user].email === email) {
       return database[user];
     }
   }
   return undefined;
-}
+};
 
 const letUserLogin = (email, password) => {
   const user = getUserByEmail(email, users);
