@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 
 //helper functions and databases
 const { getUserByEmail, letUserLogin, urlsForUser, urlDatabase, users } = require('./helpers');
+const salts = 10;
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -204,7 +205,7 @@ app.post("/register", (req, res) => {
     users[userID] = {
       id: userID,
       email: email,
-      password: bcrypt.hashSync(password, 10),
+      password: bcrypt.hashSync(password, salts),
     };
     req.session.user_id = userID;
     res.redirect("/urls");
