@@ -24,8 +24,7 @@ const generateRandomString = () => {
 };
 
 //GET routes
-//homepage when logged in, shows url index
-
+//when logged in, goes to your urls, else log in first to view
 app.get("/", (req, res) => {
   const user = req.session.user_id;
   if (user) {
@@ -35,11 +34,12 @@ app.get("/", (req, res) => {
   }
 });
 
+//if user logged in, show urls, else error
 app.get("/urls", (req, res) => {
   const user = req.session.user_id;
   let templateVars = {
-    urls: urlsForUser(user, urlDatabase),
-    user: users[user],
+    urls: urlsForUser(user),
+    user: user,
   };
   if (user) {
     res.render("urls_index", templateVars);
@@ -48,10 +48,7 @@ app.get("/urls", (req, res) => {
   }
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
+//if user logged in, show 
 app.get("/urls/new", (req, res) => {
   const user = req.session.user_id;
   if (!user) {
@@ -59,7 +56,6 @@ app.get("/urls/new", (req, res) => {
   }
   let templateVars = {
     user,
-    urls: urlsForUser(user),
   };
   res.render("urls_new", templateVars);
 });
@@ -86,10 +82,12 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = {
-    user: users[req.session.user_id],
-  };
-  res.render("urls_register", templateVars);
+  const user = req.session.user_id;
+  if (user) {
+    res.redirect("/urls");
+  } else {
+    res.render("urls_register", { user: users[req.session.user_id] });
+  }
 });
 
 app.get("/login", (req, res) => {
