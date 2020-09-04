@@ -19,19 +19,6 @@ const letUserLogin = (email, password) => {
   return false;
 };
 
-// const letUserLogin = (email, password) => {
-  
-//   let user = doesUserExist(email, users);
-//   if (user) {
-//     if (user.email === email && user.password === password) {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   }
-// };
-
-
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
@@ -54,7 +41,7 @@ const urlsForUser = (id) => {
   const userURLs = {};
   for (let url in urlDatabase) {
     if (urlDatabase[url].userID === id) {
-      userURLs[url] = urlDatabase[url];
+      userURLs[url] = { longURL: urlDatabase[url].longURL };
     }
   }
   return userURLs;
