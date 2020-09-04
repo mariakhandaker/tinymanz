@@ -1,4 +1,4 @@
-//app setup + middlewares
+//app setup + packages + modules
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -6,9 +6,11 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
+
+//helper functions and databases
 const { getUserByEmail, letUserLogin, urlsForUser, urlDatabase, users } = require('./helpers');
 
-//setting some packages for use
+app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));
 app.use(cookieSession({
@@ -16,15 +18,23 @@ app.use(cookieSession({
   keys: ['w3-luv-c00ki3s', '3sp3ci411y ch0c0l8 1s', 'p0lyhymni4'],
 }));
 
-app.set("view engine", "ejs");
-
-//function declarations
+//shortURL and userID generator function 
 const generateRandomString = () => {
   return Math.random().toString(36).substring(3, 9);
 };
 
 //GET routes
 //homepage when logged in, shows url index
+
+app.get("/", (req, res) => {
+  const user = req.session.user_id;
+  if (user) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.get("/urls", (req, res) => {
   const user = req.session.user_id;
   let templateVars = {
@@ -34,7 +44,7 @@ app.get("/urls", (req, res) => {
   if (user) {
     res.render("urls_index", templateVars);
   } else {
-    res.redirect("/login");
+    res.send("Please log in first to view your urls.");
   }
 });
 
@@ -60,13 +70,19 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-app.get("/urls/:shortURL", (req, res) => { 
+app.get("/urls/:shortURL", (req, res) => {
+  const user = req.session.user_id;
+  const shortURL = req.params.shortURL;
   let templateVars = {
-    user: req.session.user_id,
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
+    user,
+    shortURL,
+    longURL: urlDatabase[shortURL].longURL,
   };
-  res.render("urls_show", templateVars);
+  if (user) {
+    res.render("urls_show", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/register", (req, res) => {
