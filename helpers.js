@@ -11,10 +11,8 @@ const getUserByEmail = (email, database) => {
 
 const letUserLogin = (email, password) => {
   const user = getUserByEmail(email, users);
-  if (user) {
-    if (bcrypt.compareSync(password, user.hashedPassword)) {
-      return user;
-    }
+  if (user && bcrypt.compareSync(password, user.password)) {
+    return user;
   }
   return false;
 };
