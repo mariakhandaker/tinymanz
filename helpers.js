@@ -1,10 +1,12 @@
 const bcrypt = require('bcrypt');
+const { users, urlDatabase } = require('./databases');
 
 //shortURL and userID generator function
 const generateRandomString = () => {
   return Math.random().toString(36).substring(3, 9);
 };
 
+//scans database to find if email exists, returns user if so
 const getUserByEmail = (email, database) => {
   for (let user in database) {
     if (database[user].email === email) {
@@ -14,30 +16,13 @@ const getUserByEmail = (email, database) => {
   return undefined;
 };
 
+//verifies login using helper function + bcrypt, returns user if true
 const letUserLogin = (email, password) => {
   const user = getUserByEmail(email, users);
   if (user && bcrypt.compareSync(password, user.password)) {
     return user;
   }
   return false;
-};
-
-const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
-};
-
-const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  }
 };
 
 const urlsForUser = (id) => {

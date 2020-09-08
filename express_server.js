@@ -8,7 +8,8 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
 //helper functions and databases
-const { getUserByEmail, letUserLogin, urlsForUser, urlDatabase, users, generateRandomString } = require('./helpers');
+const { getUserByEmail, letUserLogin, urlsForUser, generateRandomString } = require('./helpers');
+const { urlDatabase, users } = require('./databases');
 const salts = 10;
 
 app.set("view engine", "ejs");
