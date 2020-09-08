@@ -8,7 +8,7 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
 //helper functions and databases
-const { getUserByEmail, letUserLogin, urlsForUser, urlDatabase, users } = require('./helpers');
+const { getUserByEmail, letUserLogin, urlsForUser, urlDatabase, users, generateRandomString } = require('./helpers');
 const salts = 10;
 
 app.set("view engine", "ejs");
@@ -19,10 +19,6 @@ app.use(cookieSession({
   keys: ['w3-luv-c00ki3s', '3sp3ci411y ch0c0l8 1s', 'p0lyhymni4'],
 }));
 
-//shortURL and userID generator function
-const generateRandomString = () => {
-  return Math.random().toString(36).substring(3, 9);
-};
 
 //when logged in, goes to your urls, else log in first to view
 app.get("/", (req, res) => {

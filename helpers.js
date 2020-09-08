@@ -1,5 +1,10 @@
 const bcrypt = require('bcrypt');
 
+//shortURL and userID generator function
+const generateRandomString = () => {
+  return Math.random().toString(36).substring(3, 9);
+};
+
 const getUserByEmail = (email, database) => {
   for (let user in database) {
     if (database[user].email === email) {
@@ -45,4 +50,4 @@ const urlsForUser = (id) => {
   return userURLs;
 };
 
-module.exports = { getUserByEmail, letUserLogin, urlsForUser, users, urlDatabase };
+module.exports = { generateRandomString, getUserByEmail, letUserLogin, urlsForUser, users, urlDatabase };
