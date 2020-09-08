@@ -25,6 +25,7 @@ const letUserLogin = (email, password) => {
   return false;
 };
 
+//finds URLS assiciated with logged in user and returns them for templating 
 const urlsForUser = (id) => {
   const userURLs = {};
   for (let url in urlDatabase) {
