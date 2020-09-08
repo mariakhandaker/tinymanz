@@ -19,7 +19,6 @@ app.use(cookieSession({
   keys: ['w3-luv-c00ki3s', '3sp3ci411y ch0c0l8 1s', 'p0lyhymni4'],
 }));
 
-
 //when logged in, goes to your urls, else log in first to view
 app.get("/", (req, res) => {
   const user = req.session.user_id;
@@ -35,7 +34,7 @@ app.get("/urls", (req, res) => {
   const user = req.session.user_id;
   let templateVars = {
     urls: urlsForUser(user),
-    user: user,
+    user: users[user],
   };
   if (user) {
     res.render("urls_index", templateVars);
@@ -51,7 +50,7 @@ app.get("/urls/new", (req, res) => {
     res.redirect("/login");
   }
   let templateVars = {
-    user,
+    user: users[user],
   };
   res.render("urls_new", templateVars);
 });
@@ -81,7 +80,7 @@ app.get("/urls/:shortURL", (req, res) => {
       res.send("It appears you are not the owner of this shortURL!");
     }
     const templateVars = {
-      user,
+      user: users[user],
       shortURL,
       longURL: urlDatabase[shortURL].longURL,
     };
@@ -95,11 +94,11 @@ app.post("/urls", (req, res) => {
   if (user) {
     const shortURL = generateRandomString();
     urlDatabase[shortURL] = { longURL: req.body.longURL,
-      userID: user
+      userID: user,
     };
     res.redirect("/urls/" + shortURL);
   } else {
-    res.send("Please log in to create a new TinyURL.");
+    res.redirect("/login");
   }
   
 });
@@ -140,11 +139,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 //if logged in, redirect to urls, else log in form displays
 app.get("/login", (req, res) => {
-  const user = req.session.user_id;
-  if (user) {
+  if (req.session.user_id) {
     res.redirect("/urls");
   }
-  
+
   let templateVars = {
     user: users[req.session.user_id],
   };
@@ -153,11 +151,9 @@ app.get("/login", (req, res) => {
 
 //if logged in, redirect to urls, else register form displays
 app.get("/register", (req, res) => {
-  const user = req.session.user_id;
-  if (user) {
+  if (req.session.user_id) {
     res.redirect("/urls");
   }
-  
   let templateVars = {
     user: users[req.session.user_id],
   };
@@ -181,7 +177,7 @@ app.post("/login", (req, res) => {
   const user = letUserLogin(email, password);
 
   if (user) {
-    req.session.user_id = "user_id";
+    req.session.user_id = user.id;
     res.redirect("/urls");
   } else {
     res.status("403").send("Sorry, it looks like you've entered something incorrectly. Please try again!");
